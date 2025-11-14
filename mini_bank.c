@@ -47,6 +47,9 @@ void viewAccounts() {
 }
 
 void depositMoney() {
+    struct account acc;
+    FILE *fp = fopen("bank.txt", "r");
+    FILE *temp=fopen("temp.txt","w");
     int acc_no;
     float amount;
     printf("Enter Account No: ");
@@ -54,9 +57,23 @@ void depositMoney() {
     printf("Enter Amount to Deposit: ");
     scanf("%f", &amount);
     printf("Deposited %.2f to Account No %d\n", amount, acc_no);
+    while (fscanf(fp,"%d %s %f",&acc.acc_no, acc.name,&acc.balance) != EOF) {
+        if(acc.acc_no=acc_no)
+        {
+            acc.balance=acc.balance+amount;
+        }
+        fprintf(temp,"%d %s %.2f",acc.acc_no,acc.name,acc.balance);
+    }
+    fclose(fp);
+    fclose(temp);
+    remove("bank.txt");
+    rename("temp.txt","bank.txt");
 }
 
 void withdrawMoney() {
+    struct account acc;
+    FILE *fp = fopen("bank.txt", "r");
+    FILE *temp=fopen("temp.txt","w");
     int acc_no;
     float amount;
     printf("Enter Account No: ");
@@ -64,6 +81,17 @@ void withdrawMoney() {
     printf("Enter Amount to Withdraw: ");
     scanf("%f", &amount);
     printf("Withdrew %.2f from Account No %d\n", amount, acc_no);
+    while (fscanf(fp,"%d %s %f",&acc.acc_no, acc.name,&acc.balance) != EOF) {
+        if(acc.acc_no=acc_no)
+        {
+            acc.balance=acc.balance-amount;
+        }
+        fprintf(temp,"%d %s %.2f",acc.acc_no,acc.name,acc.balance);
+    }
+    fclose(fp);
+    fclose(temp);
+    remove("bank.txt");
+    rename("temp.txt","bank.txt");
 }
 
 int main() {
@@ -85,7 +113,6 @@ int main() {
             case 3: depositMoney(); break;
             case 4: withdrawMoney(); break;
             case 5: exit(0);
-            default: printf("Invalid Choice!\n");
         }
     }
 
